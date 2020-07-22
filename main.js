@@ -107,6 +107,8 @@ app.get('*', async (req, res) => {
 function filterPosts(posts, username)
 {
 	let data = [];
+	
+	let date = new Date().getTime();
 
 	posts.forEach(post => {
 		data.push({
@@ -114,6 +116,7 @@ function filterPosts(posts, username)
 			'likes': post.diggCount,
 			'play': post.playCount,
 			'username': username,
+			'date': date
 		});
 	});
 
