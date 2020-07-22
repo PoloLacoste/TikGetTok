@@ -16,6 +16,7 @@ const { param } = require('express-validator');
 const TikTokScraper = require('tiktok-scraper');
 
 const sequelize = require('./db.js');
+const Sequelize = require('sequelize');
 
 sequelize.sequelize
 	.authenticate()
@@ -94,10 +95,24 @@ app.get('/stats/:username', [
 	let stats = await sequelize.stat.findAll({
 		where: {
 			username: req.params.username
+		},
+	});
+
+	let data = new Map();
+
+	stats.forEach((stat) => {
+		let date = stat.date;
+		if(date in data) {
+			data[date].push(stat);
+		}
+		else {
+			data[date] = [stat];
 		}
 	});
 
-	res.json(stats);
+	console.log(data);
+
+	res.json(data);
 });
 
 app.get('*', async (req, res) => {
@@ -108,7 +123,7 @@ function filterPosts(posts, username)
 {
 	let data = [];
 	
-	let date = new Date().getTime();
+	let date = new Date();
 
 	posts.forEach(post => {
 		data.push({
