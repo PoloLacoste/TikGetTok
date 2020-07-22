@@ -108,17 +108,12 @@ function filterPosts(posts, username)
 {
 	let data = [];
 
-	let time = new Date().getTime();
-	console.log(time);
-	console.log(new Date(time));
-
 	posts.forEach(post => {
 		data.push({
 			'id': post.id,
 			'likes': post.diggCount,
 			'play': post.playCount,
 			'username': username,
-			'date': time
 		});
 	});
 

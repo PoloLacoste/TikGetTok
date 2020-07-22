@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
 		likes: DataTypes.INTEGER,
 		play: DataTypes.INTEGER,
 		username: DataTypes.STRING,
-		date: DataTypes.BIGINT
+		date: {
+			type: DataTypes.DATE,
+			defaultValue: Sequelize.NOW
+		}
     }, {
 		tableName: 'stats',
 		indexes:[
