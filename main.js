@@ -127,7 +127,7 @@ function filterPosts(posts, username)
 
 	posts.forEach(post => {
 		data.push({
-			'id': post.id,
+			'postId': post.id,
 			'likes': post.diggCount,
 			'play': post.playCount,
 			'username': username,
