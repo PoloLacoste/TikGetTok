@@ -80,7 +80,8 @@ app.get('/update/:username', [
 		await sequelize.stat.bulkCreate(data);
 
 		res.json({});
-	}).catch(() => {
+	}).catch((e) => {
+		console.log(e);
 		res.status(500).json({
 			'error': 'Server error'
 		});
@@ -107,12 +108,17 @@ function filterPosts(posts, username)
 {
 	let data = [];
 
+	let time = new Date().getTime();
+	console.log(time);
+	console.log(new Date(time));
+
 	posts.forEach(post => {
 		data.push({
 			'id': post.id,
 			'likes': post.diggCount,
 			'play': post.playCount,
-			'username': username
+			'username': username,
+			'date': time
 		});
 	});
 
