@@ -14,7 +14,9 @@ app.get('/:username', [
 	TikTokScraper.user(req.params.username).then((posts) => {
 		res.json(posts['collector']);
 	}).catch(() => {
-		
+		res.status(500).json({
+			'error': 'Server error'
+		});
 	});
 });
 
@@ -24,8 +26,14 @@ app.get('/filter/:username', [
 	TikTokScraper.user(req.params.username).then((posts) => {
 		res.json(filterPosts(posts['collector']));
 	}).catch(() => {
-		
+		res.status(500).json({
+			'error': 'Server error'
+		});
 	});
+});
+
+app.get('*', async (req, res) => {
+	res.status(404).json({});
 });
 
 function filterPosts(posts)
