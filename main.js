@@ -1,10 +1,32 @@
+'use strict';
+
+const logger = require('morgan');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
+
 const express = require('express')
 const app = express()
+
+require('dotenv').config()
 
 const validate = require('./validator');
 const { param } = require('express-validator');
 
 const TikTokScraper = require('tiktok-scraper');
+
+const sequelize = require('./db.js');
+
+sequelize.sequelize
+	.authenticate()
+	.then(() => {
+		console.log('Connection has been established successfully.');
+	})
+	.catch(err => {
+		console.error('Unable to connect to the database:', err);
+		process.exit(1);
+	}
+);
 
 function normalizePort(val) {
 	var port = parseInt(val, 10);
@@ -18,6 +40,12 @@ function normalizePort(val) {
 }
 
 const port = normalizePort(process.env.PORT || '3000');
+
+app.use(logger('dev'));
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.get('/:username', [
 	param('username', 'Username is required').not().isEmpty()
@@ -35,7 +63,7 @@ app.get('/filter/:username', [
 	param('username', 'Username is required').not().isEmpty()
 ], validate, async (req, res) => {
 	TikTokScraper.user(req.params.username).then((posts) => {
-		res.json(filterPosts(posts['collector']));
+		res.json(filterPosts(posts['collector'], req.params.username));
 	}).catch(() => {
 		res.status(500).json({
 			'error': 'Server error'
@@ -43,11 +71,39 @@ app.get('/filter/:username', [
 	});
 });
 
+app.get('/update/:username', [
+	param('username', 'Username is required').not().isEmpty()
+], validate, async (req, res) => {
+	TikTokScraper.user(req.params.username).then(async (posts) => {
+		
+		let data = filterPosts(posts['collector'], req.params.username);
+		await sequelize.stat.bulkCreate(data);
+
+		res.json({});
+	}).catch(() => {
+		res.status(500).json({
+			'error': 'Server error'
+		});
+	});
+});
+
+app.get('/stats/:username', [
+	param('username', 'Username is required').not().isEmpty()
+], validate, async (req, res) => {
+	let stats = await sequelize.stat.findAll({
+		where: {
+			username: req.params.username
+		}
+	});
+
+	res.json(stats);
+});
+
 app.get('*', async (req, res) => {
 	res.status(404).json({});
 });
 
-function filterPosts(posts)
+function filterPosts(posts, username)
 {
 	let data = [];
 
@@ -56,6 +112,7 @@ function filterPosts(posts)
 			'id': post.id,
 			'likes': post.diggCount,
 			'play': post.playCount,
+			'username': username
 		});
 	});
 
