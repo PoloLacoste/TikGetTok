@@ -128,8 +128,11 @@ function filterPosts(posts, username)
 	posts.forEach(post => {
 		data.push({
 			'postId': post.id,
-			'likes': post.diggCount,
-			'play': post.playCount,
+			'likeCount': post.diggCount,
+			'playCount': post.playCount,
+			'commentCount': post.shareCount,
+			'shareCount': post.commentCount,
+			'create': new Date(post.createTime * 1000),
 			'username': username,
 			'date': date
 		});
