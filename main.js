@@ -6,7 +6,18 @@ const { param } = require('express-validator');
 
 const TikTokScraper = require('tiktok-scraper');
 
-const port = process.env.port || 3000;
+function normalizePort(val) {
+	var port = parseInt(val, 10);
+	if (isNaN(port)) {
+	  return val;
+	}
+	if (port >= 0) {
+	  return port;
+	}
+	return false;
+}
+
+const port = normalizePort(process.env.PORT || '3000');
 
 app.get('/:username', [
 	param('username', 'Username is required').not().isEmpty()
