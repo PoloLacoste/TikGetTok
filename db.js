@@ -19,7 +19,6 @@ let sequelize = new Sequelize(process.env.DATABASE_URL, {
 	define: {
 		timestamps: false
 	},
-	timezone: '+02:00'
 });
 
 let dir = __dirname + "/models";
