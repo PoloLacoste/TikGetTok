@@ -10,9 +10,12 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true
 		},
 		postId: DataTypes.STRING,
-		likes: DataTypes.INTEGER,
-		play: DataTypes.INTEGER,
+		likeCount: DataTypes.INTEGER,
+		playCount: DataTypes.INTEGER,
+		commentCount: DataTypes.INTEGER,
+		shareCount: DataTypes.INTEGER,
 		username: DataTypes.STRING,
+		create: DataTypes.DATE,
 		date: DataTypes.DATE,
     }, {
 		tableName: 'stats',
