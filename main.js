@@ -50,7 +50,7 @@ app.use(cookieParser());
 
 function scrap(username)
 {
-	return TikTokScraper.user(req.params.username, { number: 100 });
+	return TikTokScraper.user(username, { number: 100 });
 }
 
 app.get('/:username', [
