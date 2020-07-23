@@ -48,10 +48,15 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+function scrap(username)
+{
+	return TikTokScraper.user(req.params.username, { number: 100 });
+}
+
 app.get('/:username', [
 	param('username', 'Username is required').not().isEmpty()
 ], validate, async (req, res) => {
-	TikTokScraper.user(req.params.username).then((posts) => {
+	scrap(req.params.username).then((posts) => {
 		res.json(posts['collector']);
 	}).catch(() => {
 		res.status(500).json({
@@ -63,7 +68,7 @@ app.get('/:username', [
 app.get('/filter/:username', [
 	param('username', 'Username is required').not().isEmpty()
 ], validate, async (req, res) => {
-	TikTokScraper.user(req.params.username).then((posts) => {
+	scrap(req.params.username).then((posts) => {
 		res.json(filterPosts(posts['collector'], req.params.username));
 	}).catch(() => {
 		res.status(500).json({
@@ -75,7 +80,7 @@ app.get('/filter/:username', [
 app.get('/update/:username', [
 	param('username', 'Username is required').not().isEmpty()
 ], validate, async (req, res) => {
-	TikTokScraper.user(req.params.username).then(async (posts) => {
+	scrap(req.params.username).then(async (posts) => {
 		
 		let data = filterPosts(posts['collector'], req.params.username);
 		await sequelize.stat.bulkCreate(data);
