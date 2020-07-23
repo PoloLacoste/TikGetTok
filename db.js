@@ -9,6 +9,7 @@ const db = {};
 let sequelize = new Sequelize(process.env.DATABASE_URL, {
 	dialect: 'postgres',
 	protocol: "postgres",
+	ssl: false,
 	define: {
 		timestamps: false
 	}
